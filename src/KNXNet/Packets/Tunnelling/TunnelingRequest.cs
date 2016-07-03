@@ -33,8 +33,14 @@ namespace KNXNet.Packets.Tunnelling
                 ConnectionHeader = KNXNetBodyConnectionHeader.Parse(buffer, index + 6)
             };
 
+            int cemiFrameSize = request.Header.Size - request.ConnectionHeader.StructureLength -
+                                request.Header.HeaderSize;
+
+            if (cemiFrameSize == 0)
+                return request;
+
             CommonExternalMessageInterface msg;
-            CommonExternalMessageInterface.TryParse(buffer, index + 10, request.Header.Size - request.ConnectionHeader.StructureLength - request.Header.HeaderSize, out msg);
+            CommonExternalMessageInterface.TryParse(buffer, index + 10, cemiFrameSize, out msg);
             request.Message = msg;
 
             return request;

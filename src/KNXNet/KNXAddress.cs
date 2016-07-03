@@ -37,7 +37,7 @@ namespace KNXNet
             get { return (byte)(Value[0] >> 4); }
             set
             {
-                Value[0] &= 0xF0;
+                Value[0] &= 0x0F;
                 Value[0] |= (byte)(value << 4);
             }
         }
@@ -47,7 +47,7 @@ namespace KNXNet
             get { return (byte)(Value[0] & 0x0F); }
             set
             {
-                Value[0] &= 0x0F;
+                Value[0] &= 0xF0;
                 Value[0] |= (byte)(value & 0xF0);
             }
         }

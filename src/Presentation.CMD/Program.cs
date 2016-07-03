@@ -40,7 +40,6 @@ namespace Presentation.CMD
                         return;
                 }
             }
-            Console.ReadKey();
         }
     }
 }
