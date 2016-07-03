@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -10,14 +11,14 @@ using KNXNet.Placeholders;
 
 namespace KNXNet
 {
-    public class KNXReceivedDataInEventArgs : EventArgs
+    public class KnxReceivedDataInEventArgs : EventArgs
     {
         public KNXAddress SourceAddress { get; set; }
         public KNXGroupAddress DestinationAddress { get; set; }
         public byte[] Data { get; set; }
     }
 
-    public class KNXConnection : IDisposable
+    public class KnxConnection : IDisposable
     {
         private Socket _socket;
         private byte _sequenceNumber = 0;
@@ -27,8 +28,6 @@ namespace KNXNet
         public string Host { get; set; }
         public short Port { get; set; }
         public KNXAddress SourceAddress { get; set; } = new KNXAddress(1, 0, 150);
-
-        private ConcurrentQueue<byte[]> _transmitQueue = new ConcurrentQueue<byte[]>(); 
 
         public void Start()
         {
@@ -47,27 +46,59 @@ namespace KNXNet
 
         public void SendMessage(KNXGroupAddress destinationAddress, byte[] data, int lengthInBits)
         {
+            byte len;
+
+            if (lengthInBits <= 4)
+                len = 1;
+            else if (lengthInBits <= 8)
+                len = 2;
+            else if (lengthInBits <= 16)
+                len = 3;
+            else
+                len = 4;
+
+            IList<byte> buffer = new List<byte> {
+                0xBC,
+                0xE0,
+                SourceAddress.Value[0],
+                SourceAddress.Value[1],
+                destinationAddress.Value[0],
+                destinationAddress.Value[1],
+                        (byte)(len & 0x0F), 0x00};
+
+            switch (len)
+            {
+                case 1:
+                    buffer.Add((byte) (0x80 | (data[0] & 0x0F)));
+                    break;
+                case 2:
+                    buffer.Add(0x80);
+                    buffer.Add(data[0]);
+                    break;
+                case 3:
+                    buffer.Add(0x80);
+                    buffer.Add(data[1]);
+                    buffer.Add(data[2]);
+                    break;
+            }
+
             TunnelingRequest request = new TunnelingRequest()
             {
                 ConnectionHeader = new KNXNetBodyConnectionHeader()
                 {
                     ChannelId = ChannelId,
-                    SequenceCounter = _sequenceNumber
+                    SequenceCounter = _sequenceNumber++
                 },
                 Message = new CommonExternalMessageInterface()
                 {
-                    MessageCodeRaw = 0x29,
-                    ServiceInformation = new byte[]
-                    {
-                        0xBC, 0xE0, SourceAddress.Value[0], SourceAddress.Value[1], destinationAddress.Value[0], destinationAddress.Value[1],
-                        0x01, 0x00, 0x81
-                    }
+                    MessageCode = CommonExternalMessageInterface.CmeiMessageCode.LDataReq,
+                    ServiceInformation = buffer.ToArray()
                 }
             };
             
-            byte[] buffer = request.GetBytes();
+            byte[] buffer1 = request.GetBytes();
 
-            _socket.Send(buffer);
+            _socket.Send(buffer1);
         }
 
         private void InitiateConnection()
@@ -94,7 +125,7 @@ namespace KNXNet
 
         private void Listen()
         {
-            while (true)
+            while (_socket != null)
             {
                 if(_socket.Available > 0)
                     ReceiveIncommingPacket();
@@ -106,7 +137,7 @@ namespace KNXNet
         private void ReceiveIncommingPacket()
         {
             byte[] buffer = new byte[1000];
-            int received = _socket.Receive(buffer);
+            _socket.Receive(buffer);
             KNXNetIPHeader header = KNXNetIPHeader.Parse(buffer, 0);
 
             switch (header.ServiceType)
@@ -123,8 +154,8 @@ namespace KNXNet
 
                     byte[] serviceInfo = request.Message.ServiceInformation;
 
-                    KNXAddress sourceAddress = new KNXAddress() { Value = new byte[] { serviceInfo[2], serviceInfo[3] } };
-                    KNXGroupAddress destAddress = new KNXGroupAddress() { Value = new byte[] { serviceInfo[4], serviceInfo[5] } };
+                    KNXAddress sourceAddress = new KNXAddress() { Value = new[] { serviceInfo[2], serviceInfo[3] } };
+                    KNXGroupAddress destAddress = new KNXGroupAddress() { Value = new[] { serviceInfo[4], serviceInfo[5] } };
 
                     int dataLength = serviceInfo[6] & 0x0F;
                     byte[] data;
@@ -132,28 +163,26 @@ namespace KNXNet
                     switch (dataLength)
                     {
                         case 1:  // 4 bit max
-                            data = new byte[] {(byte) (serviceInfo[8] & 0x0F)};
+                            data = new[] {(byte) (serviceInfo[8] & 0x0F)};
                             break;
                         case 2: // 8 bit
-                            data = new byte[] { serviceInfo[9]};
+                            data = new[] { serviceInfo[9]};
                             break;
                         case 3: // 2 bytes
-                            data = new byte[] { serviceInfo[9], serviceInfo[10]};
+                            data = new[] { serviceInfo[9], serviceInfo[10]};
                             break;
                         default:
                             data = new byte[1];
                             break;
                     }
 
-                    OnNewDataIn?.Invoke(this, new KNXReceivedDataInEventArgs() { DestinationAddress = destAddress, SourceAddress = sourceAddress, Data = data });
+                    OnNewDataIn?.Invoke(this, new KnxReceivedDataInEventArgs() { DestinationAddress = destAddress, SourceAddress = sourceAddress, Data = data });
 
                     break;
                 case 0x0421:
-                    TunnelingAck ack2 = TunnelingAck.Parse(buffer, 0);
-                    Console.WriteLine("Got ack");
-                    received = _socket.Receive(buffer);
+                    TunnelingAck ack2 = TunnelingAck.Parse(buffer, 0);//TODO ERROR CHECKING
+                    _socket.Receive(buffer);
                     TunnelingRequest request1 = TunnelingRequest.Parse(buffer, 0);
-                    Console.WriteLine("Got req");
 
                     TunnelingAck ack3 = new TunnelingAck
                     {
@@ -163,7 +192,6 @@ namespace KNXNet
                     ack3.ConnectionHeader.SequenceCounter &= 0x01;
 
                     byte[] tmep = ack3.GetBytes();
-                    Console.WriteLine("Sent ack");
                     _socket.Send(tmep);
                     break;
                 default:
@@ -172,7 +200,7 @@ namespace KNXNet
             }
         }
 
-        public event EventHandler<KNXReceivedDataInEventArgs> OnNewDataIn;
+        public event EventHandler<KnxReceivedDataInEventArgs> OnNewDataIn;
 
         public void Disconnect()
         {

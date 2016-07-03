@@ -6,10 +6,15 @@ namespace KNXNet
     {
         public enum CmeiMessageCode
         {
+            LDataReq = 0x11,
             LDataInd = 0x29
         }
 
-        public CmeiMessageCode MessageCode => (CmeiMessageCode) MessageCodeRaw;
+        public CmeiMessageCode MessageCode
+        {
+            get { return (CmeiMessageCode) MessageCodeRaw; }
+            set { MessageCodeRaw = (byte) value; }
+        }
 
         public byte MessageCodeRaw { get; set; }
         public byte[] AdditionalInformation { get; set; } = new byte[0];
