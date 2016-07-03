@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core
+namespace KNXNet
 {
     public class CommonExternalMessageInterface
     {

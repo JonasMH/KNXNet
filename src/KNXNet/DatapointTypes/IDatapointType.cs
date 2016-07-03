@@ -1,4 +1,4 @@
-﻿namespace Core.DatapointTypes
+﻿namespace KNXNet.DatapointTypes
 {
     public interface IDatapointType
     {
