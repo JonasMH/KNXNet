@@ -1,11 +1,11 @@
 ﻿using System;
 using KNXNet.Placeholders;
 
-namespace KNXNet.Packets
+namespace KNXNet.Packets.Core
 {
     public class SearchRequest
     {
-        public KNXNetIPHeader Header { get; } = new KNXNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0201};
+        private KNXNetIPHeader Header { get; } = new KNXNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0201};
         public KNXNetIPHPAI DiscoveryEndpoint { get; set; } = new KNXNetIPHPAI();
 
         public byte[] GetBytes()

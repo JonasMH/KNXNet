@@ -1,10 +1,10 @@
 ﻿using KNXNet.Placeholders;
 
-namespace KNXNet.Packets
+namespace KNXNet.Packets.Core
 {
-    public class DisconnectRequest
+    public class ConnectionStateRequest
     {
-        public KNXNetIPHeader Header { get; set; }
+        private KNXNetIPHeader Header { get; set; }
         public byte ChannelId { get; set; }
         public byte Reserved { get; set; }
         public KNXNetIPHPAI ControlEndpoint { get; set; }

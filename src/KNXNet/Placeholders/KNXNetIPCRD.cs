@@ -1,4 +1,7 @@
-﻿namespace KNXNet.Placeholders
+﻿using System;
+using System.Net;
+
+namespace KNXNet.Placeholders
 {
     /// <summary>
     /// KNXnet/IP COnnection Response Data Block
@@ -8,7 +11,7 @@
         /// <summary>
         /// Structure lenght
         /// </summary>
-        public byte Lenght { get; set; }
+        public byte Lenght => (byte)(2 + IndependantData.Length + DependantData.Length);
         /// <summary>
         /// Connection type code
         /// </summary>
@@ -21,5 +24,10 @@
         /// Optional
         /// </summary>
         public byte[] DependantData { get; set; }
+
+        public static KNXNetIPCRD Parse(byte[] buffer, int index)
+        {
+            return new KNXNetIPCRD();
+        }
     }
 }

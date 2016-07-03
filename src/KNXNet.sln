@@ -5,6 +5,10 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KNXNet", "KNXNet\KNXNet.xproj", "{8B50C509-3FFB-4DDD-BF63-780B80580181}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Presentation.CMD", "Presentation.CMD\Presentation.CMD.xproj", "{7E0630B2-C72C-4FF5-9D45-9A9E983025A6}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KNXNet.Test.Unit", "KNXNet.Test.Unit\KNXNet.Test.Unit.xproj", "{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8B50C509-3FFB-4DDD-BF63-780B80580181}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B50C509-3FFB-4DDD-BF63-780B80580181}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B50C509-3FFB-4DDD-BF63-780B80580181}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E0630B2-C72C-4FF5-9D45-9A9E983025A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0630B2-C72C-4FF5-9D45-9A9E983025A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0630B2-C72C-4FF5-9D45-9A9E983025A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0630B2-C72C-4FF5-9D45-9A9E983025A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

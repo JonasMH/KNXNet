@@ -1,10 +1,10 @@
 ﻿using KNXNet.Placeholders;
 
-namespace KNXNet.Packets
+namespace KNXNet.Packets.Core
 {
     public class DescriptionResponse
     {
-        public KNXNetIPHeader Header { get; set; }
+        private KNXNetIPHeader Header { get; set; }
         public KNXNetIPDIB DeviceHardware { get; set; }
         public KNXNetIPDIB SupportedServiceFamilies { get; set; }
         /// <summary>

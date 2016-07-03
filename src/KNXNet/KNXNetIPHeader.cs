@@ -20,5 +20,16 @@ namespace KNXNet
 
             return buffer;
         }
+
+        public static KNXNetIPHeader Parse(byte[] buffer, int index)
+        {
+            return new KNXNetIPHeader
+            {
+                HeaderSize = buffer[index],
+                Version = buffer[index + 1],
+                ServiceType = KNXBitConverter.ToShort(buffer, index + 2),
+                Size = KNXBitConverter.ToShort(buffer, index + 4)
+            };
+        }
     }
 }

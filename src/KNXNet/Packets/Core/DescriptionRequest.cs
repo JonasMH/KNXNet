@@ -1,10 +1,10 @@
 ﻿using KNXNet.Placeholders;
 
-namespace KNXNet.Packets
+namespace KNXNet.Packets.Core
 {
     public class DescriptionRequest
     {
-        public KNXNetIPHeader Header { get; set; }
+        private KNXNetIPHeader Header { get; set; }
         public KNXNetIPHPAI ControlEndport { get; set; }
     }
 }

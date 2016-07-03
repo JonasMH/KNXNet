@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace KNXNet
 {
@@ -12,6 +13,11 @@ namespace KNXNet
                 Array.Reverse(buffer);
 
             return buffer;
+        }
+
+        public static short ToShort(byte[] buffer, int index)
+        {
+            return BitConverter.ToInt16(new byte[] {buffer[index + 1], buffer[index]}, 0);
         }
     }
 }

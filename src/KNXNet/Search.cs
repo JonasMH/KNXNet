@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using KNXNet.Packets;
+using KNXNet.Packets.Core;
 using KNXNet.Placeholders;
 
 namespace KNXNet
