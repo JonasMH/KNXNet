@@ -20,6 +20,16 @@ namespace KNXNet
             BusDevice = busdevice;
         }
 
+        public static KNXAddress Parse(string input)
+        {
+            string[] vals = input.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (vals.Length != 3)
+                throw new Exception("Could not parse, not enough .");
+
+            return new KNXAddress((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]));
+        }
+
         public byte[] Value
         {
             get { return _value; }

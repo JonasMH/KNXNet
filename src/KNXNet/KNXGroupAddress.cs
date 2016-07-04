@@ -18,6 +18,16 @@ namespace KNXNet.Placeholders
             SubGroup = subGroup;
         }
 
+        public static KNXGroupAddress Parse(string input)
+        {
+            string[] vals = input.Split(new string[] { "/"}, StringSplitOptions.RemoveEmptyEntries);
+
+            if(vals.Length != 3)
+                throw new Exception("Could not parse, not enough /");
+
+            return new KNXGroupAddress((byte) int.Parse(vals[0]), (byte) int.Parse(vals[1]), (byte) int.Parse(vals[2]));
+        }
+
         public enum AddressFormat
         {
             Level2,
@@ -51,11 +61,11 @@ namespace KNXNet.Placeholders
 
         public byte MiddleGroup
         {
-            get { return (byte)(Value[0] & 0x07); }
+            get { return (byte)(Value[0] & 0xF8); }
             set
             {
-                Value[0] &= 0x07;
-                Value[0] |= (byte)(value & 0xF8);
+                Value[0] &= 0xF8;
+                Value[0] |= (byte)(value & 0x07);
             }
         }
 

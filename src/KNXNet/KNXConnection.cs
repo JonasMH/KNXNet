@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -28,6 +29,7 @@ namespace KNXNet
         public string Host { get; set; }
         public short Port { get; set; }
         public KNXAddress SourceAddress { get; set; } = new KNXAddress(1, 0, 150);
+        public ILogger Logger { set; private get; }
 
         public void Start()
         {
@@ -37,11 +39,10 @@ namespace KNXNet
 
         public void StartAsync()
         {
-            Task.Factory.StartNew(() =>
-            {
-                InitiateConnection();
-                Listen();
-            });
+            InitiateConnection();
+
+
+            Task.Factory.StartNew(Listen);
         }
 
         public void SendMessage(KNXGroupAddress destinationAddress, byte[] data, int lengthInBits)
@@ -96,9 +97,7 @@ namespace KNXNet
                 }
             };
             
-            byte[] buffer1 = request.GetBytes();
-
-            _socket.Send(buffer1);
+            _socket.Send(request.GetBytes());
         }
 
         private void InitiateConnection()
@@ -109,28 +108,50 @@ namespace KNXNet
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _socket.Connect(Host, Port);
 
-            IPEndPoint localEndPoint = (IPEndPoint)_socket.LocalEndPoint;
+            IPEndPoint localEndPoint = (IPEndPoint) _socket.LocalEndPoint;
 
             ConnectRequest request = new ConnectRequest()
             {
-                DataEndpoint = new KNXNetIPHPAI() { Address = localEndPoint.Address, Port = (short)localEndPoint.Port, ProtocolCode = KNXNetIPHPAI.ProtocolCodes.Ipv4Udp },
-                ControlEndpoint = new KNXNetIPHPAI() { Address = localEndPoint.Address, Port = (short)localEndPoint.Port, ProtocolCode = KNXNetIPHPAI.ProtocolCodes.Ipv4Udp },
-                ConnectionRequest = new KNXNetIPCRI() { ConnectionType = KNXNetIPCRI.ConnectionTypes.Tunnel, IndependantData = new byte[] { 0x02, 0x00 } }
+                DataEndpoint =
+                    new KNXNetIPHPAI()
+                    {
+                        Address = localEndPoint.Address,
+                        Port = (short) localEndPoint.Port,
+                        ProtocolCode = KNXNetIPHPAI.ProtocolCodes.Ipv4Udp
+                    },
+                ControlEndpoint =
+                    new KNXNetIPHPAI()
+                    {
+                        Address = localEndPoint.Address,
+                        Port = (short) localEndPoint.Port,
+                        ProtocolCode = KNXNetIPHPAI.ProtocolCodes.Ipv4Udp
+                    },
+                ConnectionRequest =
+                    new KNXNetIPCRI()
+                    {
+                        ConnectionType = KNXNetIPCRI.ConnectionTypes.Tunnel,
+                        IndependantData = new byte[] {0x02, 0x00}
+                    }
             };
 
             byte[] buffer = request.GetBytes();
 
             _socket.Send(buffer);
+            
+            buffer = new byte[1000];
+            _socket.Receive(buffer);
+
+            ConnectResponse response = ConnectResponse.Parse(buffer, 0);
+            ChannelId = response.ChannelId;
+
+            Logger?.WriteLine("Ch. #: " + ChannelId);
         }
 
         private void Listen()
         {
             while (_socket != null)
             {
-                if(_socket.Available > 0)
-                    ReceiveIncommingPacket();
-                
-                Task.Delay(1);
+                ReceiveIncommingPacket();
             }
         }
 
@@ -145,7 +166,7 @@ namespace KNXNet
                 case 0x0206:
                     ConnectResponse response = ConnectResponse.Parse(buffer, 0);
                     ChannelId = response.ChannelId;
-                    Console.WriteLine(ChannelId);
+                    Logger?.WriteLine("Ch. #: " + ChannelId);
                     break;
                 case 0x0420:
                     TunnelingRequest request = TunnelingRequest.Parse(buffer, 0);
@@ -195,7 +216,7 @@ namespace KNXNet
                     _socket.Send(tmep);
                     break;
                 default:
-                    Console.WriteLine("Unknown packet with service type: " + header.ServiceType.ToString("X"));
+                    Logger?.WriteLine("Unknown packet with service type: " + header.ServiceType.ToString("X"), LogType.Warn);
                     break;
             }
         }

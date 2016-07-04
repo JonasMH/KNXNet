@@ -15,7 +15,8 @@ namespace Presentation.CMD
             KnxConnection connection = new KnxConnection()
             {
                 Host = "192.168.1.21",
-                Port = 3671
+                Port = 3671,
+                Logger = new ConsoleLogger()
             };
 
             connection.OnNewDataIn += (sender, eventArgs) =>
@@ -24,16 +25,17 @@ namespace Presentation.CMD
             };
 
             connection.StartAsync();
+            Console.WriteLine("Got connection");
 
             while (true)
             {
                 switch (Console.ReadKey().Key)
                 {
                     case ConsoleKey.A:
-                        connection.SendMessage(new KNXGroupAddress(0, 0, 41), new byte[]{0x00}, 1 );
+                        connection.SendMessage(KNXGroupAddress.Parse("0/0/41"), new byte[]{ 0x00 }, 1 );
                         break;
                     case ConsoleKey.S:
-                        connection.SendMessage(new KNXGroupAddress(0, 0, 41), new byte[] { 0x01 }, 1);
+                        connection.SendMessage(KNXGroupAddress.Parse("0/0/41"), new byte[] { 0x01 }, 1);
                         break;
                     case ConsoleKey.Q:
                         connection.Disconnect();
