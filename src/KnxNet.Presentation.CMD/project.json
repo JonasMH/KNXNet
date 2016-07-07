@@ -5,8 +5,8 @@
   },
 
   "dependencies": {
-    "KnxNet.Core": "1.0.0-*",
-    "KnxNet.Tunneling": "1.0.0-*",
+    "KnxNet.Core": "0.1.0-*",
+    "KnxNet.Tunneling": "0.1.0-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"

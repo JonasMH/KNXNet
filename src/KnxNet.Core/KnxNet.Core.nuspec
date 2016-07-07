@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>KnxNet.Core</id>
+    <version>0.1.1</version>
+    <title>KnxNet Core</title>
+    <authors>Jonas M. Hansen</authors>
+    <owners>Jonas M. Hansen</owners>
+    <description>KnxNet Core package</description>
+    <tags>Knx</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\**" target="lib" />
+  </files>
+</package>
