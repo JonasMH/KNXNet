@@ -3,7 +3,7 @@ using KnxNet.Core.Placeholders;
 
 namespace KnxNet.Core.Packets
 {
-    public class SearchRequest
+    public class SearchRequest : IKnxPacket
     {
         private KnxNetIPHeader Header { get; } = new KnxNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0201};
         public KnxNetIPHPAI DiscoveryEndpoint { get; set; } = new KnxNetIPHPAI();

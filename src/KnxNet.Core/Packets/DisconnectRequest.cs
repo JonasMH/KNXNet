@@ -3,7 +3,7 @@ using KnxNet.Core.Placeholders;
 
 namespace KnxNet.Core.Packets
 {
-    public class DisconnectRequest
+    public class DisconnectRequest : IKnxPacket
     {
         private KnxNetIPHeader Header { get; } = new KnxNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0209, Size = 0x10};
         public byte ChannelId { get; set; }

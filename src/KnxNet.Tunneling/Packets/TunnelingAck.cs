@@ -1,9 +1,10 @@
 ﻿using KnxNet.Core;
 using System;
+using KnxNet.Core.Packets;
 
 namespace KnxNet.Tunneling.Packets
 {
-    public class TunnelingAck
+    public class TunnelingAck : IKnxPacket
     {
         public KnxNetIPHeader Header { get; set; } = new KnxNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0421};
         public KnxNetBodyConnectionHeader ConnectionHeader { get; set; } = new KnxNetBodyConnectionHeader();

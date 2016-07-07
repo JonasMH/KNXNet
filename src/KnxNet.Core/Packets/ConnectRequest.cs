@@ -3,7 +3,7 @@ using KnxNet.Core.Placeholders;
 
 namespace KnxNet.Core.Packets
 {
-    public class ConnectRequest
+    public class ConnectRequest : IKnxPacket
     {
         private KnxNetIPHeader Header { get; set; } = new KnxNetIPHeader() {HeaderSize = 0x06, Version = 0x10, ServiceType = 0x0205};
         

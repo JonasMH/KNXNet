@@ -2,6 +2,37 @@
 
 namespace KnxNet.Core
 {
+    public enum ServiceType
+    {
+        SearchRequest = 0x0201,
+        SearchResponse = 0x0202,
+        DescriptionRequest = 0x0203,
+        DescriptionResponse = 0x0204,
+        ConnectRequest = 0x0205,
+        ConnectResponse = 0x0206,
+        ConnectionStateRequest = 0x0207,
+        ConnectionStateResponse = 0x0208,
+        DisconnectRequest = 0x0209,
+        DisconnectResponse = 0x020A,
+
+        DeviceConfigurationRequest = 0x0310,
+        DeviceConfigurationAcknowledge = 0x0311,
+
+        TunnelingRequest = 0x0420,
+        TunnelingAcknowledge = 0x0421,
+
+        RoutingIndication = 0x0530,
+        RoutingLostMessage = 0x0531
+    }
+
+    /* Connection types
+        DeviceManagementConnection = 0x03,
+        TunnelConnection = 0x04,
+        RemoteLogConnection = 0x06,
+        RemoteConfigurationConnection = 0x07,
+        ObjectServerConnection = 0x08
+     */
+
     public class KnxNetIPHeader
     {
         public byte HeaderSize { get; set; }

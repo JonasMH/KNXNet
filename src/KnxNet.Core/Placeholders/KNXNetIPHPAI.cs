@@ -16,6 +16,20 @@ namespace KnxNet.Core.Placeholders
         public IPAddress Address { get; set; }
         public short Port { get; set; }
 
+        public KnxNetIPHPAI()
+        { }
+
+        public KnxNetIPHPAI(IPAddress address, int port, ProtocolCodes protocolCode)
+        {
+            Address = address;
+            Port = (short) port;
+            ProtocolCode = protocolCode;
+        }
+
+        public KnxNetIPHPAI(IPEndPoint endPoint, ProtocolCodes protocolCode) : this(endPoint.Address, endPoint.Port, protocolCode)
+        {
+        }
+
         public byte[] GetBytes()
         {
             byte[] buffer = new byte[8];

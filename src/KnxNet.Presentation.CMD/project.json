@@ -6,10 +6,12 @@
 
   "dependencies": {
     "KnxNet.Core": "1.0.0-*",
+    "KnxNet.Tunneling": "1.0.0-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
-    }
+    },
+    "System.Linq.Queryable": "4.0.1"
   },
   "frameworks": {
     "netcoreapp1.0": {
