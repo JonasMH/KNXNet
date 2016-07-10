@@ -16,7 +16,4 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-    <Exec Command="nuget pack KNXNet.nuspec" />
-  </Target>
 </Project>

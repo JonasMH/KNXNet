@@ -51,14 +51,14 @@ namespace KnxNet.Core
             get { return (byte)(Value[0] >> 3); }
             set
             {
-                Value[0] &= 0xF8;
+                Value[0] &= 0x07;
                 Value[0] |= (byte)(value << 3);
             }
         }
 
         public byte MiddleGroup
         {
-            get { return (byte)(Value[0] & 0xF8); }
+            get { return (byte)(Value[0] & 0x07); }
             set
             {
                 Value[0] &= 0xF8;

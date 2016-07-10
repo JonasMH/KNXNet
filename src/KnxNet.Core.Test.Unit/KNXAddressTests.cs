@@ -1,51 +1,42 @@
 ﻿using KnxNet.Core;
 using NUnit.Framework;
 
-namespace KNXNet.Test.Unit.CMD
+namespace KNXNet.Core.Test.Unit
 {
     [TestFixture]
-    public class KNXAddressTests
+    public class KnxAddressTests
     {
-        [Test]
-        public void Area_ValueZero_Zero()
+        [TestCase(new byte[] { 0x00, 0x00 }, 00)]
+        [TestCase(new byte[] { 0xF0, 0x00 }, 15)]
+        [TestCase(new byte[] { 0x0F, 0xFF }, 00)]
+        [TestCase(new byte[] { 0xFF, 0xFF }, 15)]
+        [TestCase(new byte[] { 0x90, 0x00 }, 9)]
+        public void SetValue_InputValue_ExpectedAreaSet(byte[] input, int expected)
         {
-            KnxAddress addr = new KnxAddress {Value = new byte[] {0x00, 0x00}};
-            Assert.That(addr.Area, Is.EqualTo(0));
+            KnxAddress addr = new KnxAddress(){Value = input};
+            Assert.That(addr.Area, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void Line_ValueZero_Zero()
+        [TestCase(new byte[] { 0x00, 0x00 }, 00)]
+        [TestCase(new byte[] { 0x0F, 0x00 }, 15)]
+        [TestCase(new byte[] { 0xF0, 0xFF }, 00)]
+        [TestCase(new byte[] { 0xFF, 0xFF }, 15)]
+        [TestCase(new byte[] { 0x09, 0x00 }, 9)]
+        public void SetValue_InputValue_ExpectedLineSet(byte[] input, int expected)
         {
-            KnxAddress addr = new KnxAddress {Value = new byte[] {0x00, 0x00}};
-            Assert.That(addr.Line, Is.EqualTo(0));
+            KnxAddress addr = new KnxAddress() { Value = input };
+            Assert.That(addr.Line, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void BusDevice_ValueZero_Zero()
+        [TestCase(new byte[] { 0x00, 0x00 }, 0)]
+        [TestCase(new byte[] { 0x00, 0xFF }, 255)]
+        [TestCase(new byte[] { 0xFF, 0x00 }, 0)]
+        [TestCase(new byte[] { 0xFF, 0xFF }, 255)]
+        [TestCase(new byte[] { 0x00, 0x10 }, 16)]
+        public void SetValue_InputValue_ExpectedBusDeviceSet(byte[] input, int expected)
         {
-            KnxAddress addr = new KnxAddress {Value = new byte[] {0x00, 0x00}};
-            Assert.That(addr.BusDevice, Is.EqualTo(0));
-        }
-
-        [Test]
-        public void Area_ValueMax_MaxAddress()
-        {
-            KnxAddress addr = new KnxAddress {Value = new byte[] {0xFF, 0xFF}};
-            Assert.That(addr.Area, Is.EqualTo(15));
-        }
-
-        [Test]
-        public void Line_ValueMax_MaxAddress()
-        {
-            KnxAddress addr = new KnxAddress { Value = new byte[] { 0xFF, 0xFF } };
-            Assert.That(addr.Line, Is.EqualTo(15));
-        }
-
-        [Test]
-        public void BusDevice_ValueMax_MaxAddress()
-        {
-            KnxAddress addr = new KnxAddress { Value = new byte[] { 0xFF, 0xFF } };
-            Assert.That(addr.BusDevice, Is.EqualTo(255));
+            KnxAddress addr = new KnxAddress() { Value = input };
+            Assert.That(addr.BusDevice, Is.EqualTo(expected));
         }
     }
 }

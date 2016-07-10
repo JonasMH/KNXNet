@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>KnxNet.Tunneling</id>
-		<version>0.1.1</version>
+		<version>0.1.2</version>
 		<title>KnxNet Tunneling</title>
 		<authors>Jonas M. Hansen</authors>
 		<owners>Jonas M. Hansen</owners>
@@ -10,7 +10,7 @@
 		<tags>Knx</tags>
 		<dependencies> 
 			<group>
-				<dependency id="KnxNet.Core" version="0.1.1" />
+				<dependency id="KnxNet.Core" version="0.1.2" />
 			</group>
 		</dependencies>
 	</metadata>

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>KnxNet.Core</id>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <title>KnxNet Core</title>
     <authors>Jonas M. Hansen</authors>
     <owners>Jonas M. Hansen</owners>
