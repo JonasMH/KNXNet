@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Presentation.CMD")]
+[assembly: AssemblyProduct("KnxNet.Tunneling.Test.Unit")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7e0630b2-c72c-4ff5-9d45-9a9e983025a6")]
+[assembly: Guid("4000f939-7ecc-4aaf-b5db-ffbfdf0e99fb")]

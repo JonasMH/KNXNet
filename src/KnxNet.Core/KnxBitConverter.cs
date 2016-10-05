@@ -2,21 +2,21 @@
 
 namespace KnxNet.Core
 {
-    public static class KnxBitConverter
-    {
-        public static byte[] GetBytes(short value)
-        {
-            byte[] buffer = BitConverter.GetBytes(value);
+	public static class KnxBitConverter
+	{
+		public static byte[] GetBytes(short value)
+		{
+			byte[] buffer = BitConverter.GetBytes(value);
 
-            if(BitConverter.IsLittleEndian)
-                Array.Reverse(buffer);
+			if (BitConverter.IsLittleEndian)
+				Array.Reverse(buffer);
 
-            return buffer;
-        }
+			return buffer;
+		}
 
-        public static short ToShort(byte[] buffer, int index)
-        {
-            return BitConverter.ToInt16(new byte[] {buffer[index + 1], buffer[index]}, 0);
-        }
-    }
+		public static short ToShort(byte[] buffer, int index)
+		{
+			return BitConverter.ToInt16(new byte[] { buffer[index + 1], buffer[index] }, 0);
+		}
+	}
 }
