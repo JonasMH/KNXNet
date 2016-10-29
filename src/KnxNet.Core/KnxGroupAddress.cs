@@ -17,7 +17,7 @@ namespace KnxNet.Core
 
 		public static KnxGroupAddress Parse(string input)
 		{
-			string[] vals = input.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+			string[] vals = input.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (vals.Length != 3)
 				throw new Exception("Could not parse, not enough /");
@@ -25,22 +25,13 @@ namespace KnxNet.Core
 			return new KnxGroupAddress((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]));
 		}
 
-		public enum AddressFormat
-		{
-			Level2,
-			Level3,
-			Free
-		};
-
-		public AddressFormat Format { get; set; } = AddressFormat.Level3;
-
 		public byte[] Value
 		{
 			get { return _value; }
 			set
 			{
 				if (_value == null || _value.Length != 2)
-					throw new ArgumentException("Must be 2 long", nameof(value));
+					throw new ArgumentException("Lenght must be 2 long", nameof(value));
 
 				_value = value;
 			}
@@ -67,6 +58,22 @@ namespace KnxNet.Core
 		}
 
 		public byte SubGroup { get { return Value[1]; } set { Value[1] = value; } }
+
+		public static bool operator==(KnxGroupAddress address1, KnxGroupAddress address2)
+		{
+			if ((object)address1 == null || (object)address2 == null)
+				return false;
+
+			return
+				address1.MainGroup == address2.MainGroup &&
+				address1.MiddleGroup == address2.MiddleGroup &&
+				address1.SubGroup == address2.SubGroup;
+		}
+
+		public static bool operator !=(KnxGroupAddress address1, KnxGroupAddress address2)
+		{
+			return !(address1 == address2);
+		}
 
 		public override string ToString()
 		{

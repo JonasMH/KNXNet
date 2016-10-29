@@ -13,7 +13,7 @@ namespace KnxNet.Tunneling
 		public UdpClient UdpClient { private get; set; }
 		private readonly KnxTunnelingConnection _connection;
 
-		private BlockingCollection<KnxReceivedDataInEventArgs> _receivedPackets = new BlockingCollection<KnxReceivedDataInEventArgs>();
+		private readonly BlockingCollection<KnxReceivedDataInEventArgs> _receivedPackets = new BlockingCollection<KnxReceivedDataInEventArgs>();
 
 		public KnxTunnelingReceiver(KnxTunnelingConnection connection, UdpClient client)
 		{
@@ -23,8 +23,8 @@ namespace KnxNet.Tunneling
 
 		public void Start()
 		{
-			Task.Factory.StartNew(() => EventTask());
-			Task.Factory.StartNew(() => ListenTask());
+			Task.Factory.StartNew(EventTask);
+			Task.Factory.StartNew(ListenTask);
 		}
 
 		private void EventTask()
@@ -59,18 +59,18 @@ namespace KnxNet.Tunneling
 					break;
 				case ServiceType.TunnelingAcknowledge:
 					/*TunnelingAck ack2 = TunnelingAck.Parse(buffer, 0);//TODO ERROR CHECKING
-                    _socket.Receive(buffer);
-                    TunnelingRequest request1 = TunnelingRequest.Parse(buffer, 0);
+					_socket.Receive(buffer);
+					TunnelingRequest request1 = TunnelingRequest.Parse(buffer, 0);
 
-                    TunnelingAck ack3 = new TunnelingAck
-                    {
-                        ConnectionHeader = request1.ConnectionHeader
-                    };
+					TunnelingAck ack3 = new TunnelingAck
+					{
+						ConnectionHeader = request1.ConnectionHeader
+					};
 
-                    ack3.ConnectionHeader.SequenceCounter &= 0x01;
+					ack3.ConnectionHeader.SequenceCounter &= 0x01;
 
-                    byte[] tmep = ack3.GetBytes();
-                    _socket.Send(tmep);*/
+					byte[] tmep = ack3.GetBytes();
+					_socket.Send(tmep);*/
 					break;
 				default:
 					Logger?.WriteLine("Unknown packet with service type: " + header.ServiceType.ToString("X"), LogType.Warn);

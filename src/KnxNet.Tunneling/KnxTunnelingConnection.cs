@@ -26,7 +26,6 @@ namespace KnxNet.Tunneling
 		public event EventHandler<KnxReceivedDataInEventArgs> OnData;
 
 		public TimeSpan ConnectionStateRequestInterval { get; set; } = TimeSpan.FromSeconds(60);
-		private Timer _connectionStateRequestTimer;
 
 		private byte _sequenceNumber = 0;
 		private UdpClient _udpClient;
@@ -39,14 +38,13 @@ namespace KnxNet.Tunneling
 
 		public KnxTunnelingConnection(string host, int port)
 		{
-			_connectionStateRequestTimer = new Timer(state => SendConnectionStateRequest(), null, TimeSpan.Zero,
+			new Timer(state => SendConnectionStateRequest(), null, TimeSpan.Zero,
 				ConnectionStateRequestInterval);
 
 			Host = host;
 			Port = port;
-			//RemoteEndPoint = new IPEndPoint();
-			//RemoteEndPoint = new DnsEndPoint(Host, port).Create(); TODO: FIX
-			
+
+			RemoteEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.21"), port); 
 
 			Address = IPAddress.Any;
 		}
@@ -68,7 +66,7 @@ namespace KnxNet.Tunneling
 
 		public void Connect()
 		{
-			_udpClient = new UdpClient(0);
+			_udpClient = new UdpClient(new IPEndPoint(IPAddress.Parse("192.168.1.178"), 0));
 
 			ConnectRequest request = new ConnectRequest()
 			{
