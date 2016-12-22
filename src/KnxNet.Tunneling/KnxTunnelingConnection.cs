@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -15,7 +14,7 @@ namespace KnxNet.Tunneling
 		public string Host { get; }
 		public int Port { get; }
 
-		public IPAddress Address { get; }
+		public IPEndPoint LocalEndPoint { get; set; }
 		public IPEndPoint RemoteEndPoint { get; }
 		public KnxAddress SourceAddress { get; set; } = new KnxAddress(1, 0, 150);
 
@@ -27,14 +26,13 @@ namespace KnxNet.Tunneling
 
 		public TimeSpan ConnectionStateRequestInterval { get; set; } = TimeSpan.FromSeconds(60);
 
-		private byte _sequenceNumber = 0;
+		private byte _sequenceNumber;
 		private UdpClient _udpClient;
 
 		public object SequenceNumberLock = new object();
 
 		internal KnxTunnelingSender _sender;
 		internal KnxTunnelingReceiver _receiver;
-
 
 		public KnxTunnelingConnection(string host, int port)
 		{
@@ -44,9 +42,8 @@ namespace KnxNet.Tunneling
 			Host = host;
 			Port = port;
 
-			RemoteEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.21"), port); 
-
-			Address = IPAddress.Any;
+			RemoteEndPoint = new IPEndPoint(IPAddress.Parse(host), port);
+			LocalEndPoint = new IPEndPoint(IPAddress.Any, 0);
 		}
 
 
@@ -66,7 +63,7 @@ namespace KnxNet.Tunneling
 
 		public void Connect()
 		{
-			_udpClient = new UdpClient(new IPEndPoint(IPAddress.Parse("192.168.1.178"), 0));
+			_udpClient = new UdpClient(LocalEndPoint);
 
 			ConnectRequest request = new ConnectRequest()
 			{

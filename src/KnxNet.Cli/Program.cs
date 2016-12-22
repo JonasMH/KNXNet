@@ -20,7 +20,7 @@ namespace KnxNet.Cli
 
 		public static void Main(string[] args)
 		{
-			string mapping = File.ReadAllText("C:\\Users\\Jonas\\Desktop\\Ramskovvej.esf");
+			string mapping = File.ReadAllText("C:\\Users\\Jonas Hansen\\Desktop\\Ramskovvej.esf");
 			KnxGroupAddressDescriptionMap map = new EsfImporter().LoadFromString(mapping);
 			KnxTunnelingConnection connection = new KnxTunnelingConnection("192.168.1.21", 3671);
 

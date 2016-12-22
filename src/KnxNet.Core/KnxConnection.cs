@@ -18,8 +18,8 @@ namespace KnxNet.Core
 
 		string Host { get; }
 		int Port { get; }
-
-		IPAddress Address { get; }
+		
+		IPEndPoint LocalEndPoint { get; }
 		IPEndPoint RemoteEndPoint { get; }
 
 		void Connect();
