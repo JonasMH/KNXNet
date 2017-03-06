@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26206.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KnxNet.Tunneling", "KnxNet.Tunneling\KnxNet.Tunneling.xproj", "{BCD60753-7FE4-442A-9188-38363EC174DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnxNet.Tunneling", "KnxNet.Tunneling\KnxNet.Tunneling.csproj", "{BCD60753-7FE4-442A-9188-38363EC174DE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KnxNet.Core", "KnxNet.Core\KnxNet.Core.xproj", "{8B50C509-3FFB-4DDD-BF63-780B80580181}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnxNet.Core", "KnxNet.Core\KnxNet.Core.csproj", "{8B50C509-3FFB-4DDD-BF63-780B80580181}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KnxNet.Core.Test.Unit", "KnxNet.Core.Test.Unit\KnxNet.Core.Test.Unit.xproj", "{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnxNet.Core.Test.Unit", "KnxNet.Core.Test.Unit\KnxNet.Core.Test.Unit.csproj", "{747BD9A8-8EB3-40AE-AC27-B9F1CAE082E0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KnxNet.Tunneling.Test.Unit", "KnxNet.Tunneling.Test.Unit\KnxNet.Tunneling.Test.Unit.xproj", "{4000F939-7ECC-4AAF-B5DB-FFBFDF0E99FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnxNet.Tunneling.Test.Unit", "KnxNet.Tunneling.Test.Unit\KnxNet.Tunneling.Test.Unit.csproj", "{4000F939-7ECC-4AAF-B5DB-FFBFDF0E99FB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KnxNet.Cli", "KnxNet.Cli\KnxNet.Cli.xproj", "{0F3A2711-6549-42C0-BDB0-69DA2C379F37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnxNet.Cli", "KnxNet.Cli\KnxNet.Cli.csproj", "{0F3A2711-6549-42C0-BDB0-69DA2C379F37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

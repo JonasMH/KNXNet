@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<VersionPrefix>0.0.1</VersionPrefix>
+		<TargetFramework>netcoreapp1.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\KnxNet.Core\KnxNet.Core.csproj" />
+	</ItemGroup>
+</Project>

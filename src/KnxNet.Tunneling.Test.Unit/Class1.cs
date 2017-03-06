@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿
+using Xunit;
 
 namespace KnxNet.Tunneling.Test.Unit
 {
-	[TestFixture]
-    public class Class1
-    {
-		[Test]
-        public  void Always_Green()
+	public class Class1
+	{
+		[Theory]
+		public void Always_Green()
 		{
-			Assert.That(true, Is.EqualTo(true));
+			Assert.Equal(true, true);
 		}
-    }
+	}
 }

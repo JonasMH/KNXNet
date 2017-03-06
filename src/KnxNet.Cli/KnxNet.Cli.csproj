@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp1.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\KnxNet.Core\KnxNet.Core.csproj" />
+		<ProjectReference Include="..\KnxNet.Tunneling\KnxNet.Tunneling.csproj" />
+	</ItemGroup>
+
+</Project>
