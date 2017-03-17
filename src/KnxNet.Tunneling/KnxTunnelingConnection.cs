@@ -49,7 +49,7 @@ namespace KnxNet.Tunneling
 
 		private void SendConnectionStateRequest()
 		{
-			if (_udpClient == null && IsConnected)
+			if (_udpClient == null || !IsConnected)
 				return;
 
 			try

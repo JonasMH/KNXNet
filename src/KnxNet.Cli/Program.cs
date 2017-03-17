@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KnxNet.Core;
 using KnxNet.Tunneling;
+using KnxNet.Core.DataTypes;
 
 namespace KnxNet.Cli
 {
@@ -20,20 +21,19 @@ namespace KnxNet.Cli
 
 		public static void Main(string[] args)
 		{
-			string mapping = File.ReadAllText("C:\\Users\\Jonas Hansen\\Desktop\\Ramskovvej.esf");
-			KnxGroupAddressDescriptionMap map = new EsfImporter().LoadFromString(mapping);
 			KnxTunnelingConnection connection = new KnxTunnelingConnection("172.16.1.122", 3671);
-
-			foreach (KnxGroupAddressDescription knxGroupAddressDescription in map.Where(x => x.Name.Contains("08")))
-			{
-				Console.WriteLine(knxGroupAddressDescription);
-			}
+			connection.Logger = new ConsoleLogger();
 
 			connection.OnConnect += (sender, eventArgs) => Console.WriteLine("Connected");
 			connection.OnDisconnect += (sender, eventArgs) => Console.WriteLine("Disconnected");
 			connection.OnData += (sender, eventArgs) =>
 			{
 				Console.WriteLine(eventArgs.SourceAddress + " -> " + eventArgs.DestinationAddress + " : " + ByteArrayToString(eventArgs.Data));
+
+				if(eventArgs.DestinationAddress.ToString() == "15/1/0" && eventArgs.RequestType == APCIType.AGroupValueWrite)
+				{
+					Console.WriteLine("Temp: " + new DataTypeParser().DTP9(eventArgs.Data).FloatValue);
+				}
 			};
 
 			connection.Connect();

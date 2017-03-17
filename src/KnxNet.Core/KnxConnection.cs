@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KnxNet.Tunneling;
+using System;
 using System.Net;
 
 namespace KnxNet.Core
@@ -8,6 +9,7 @@ namespace KnxNet.Core
 		public KnxAddress SourceAddress { get; set; }
 		public KnxGroupAddress DestinationAddress { get; set; }
 		public byte[] Data { get; set; }
+		public APCIType RequestType { get; set; }
 	}
 
 	public interface IKnxConnection

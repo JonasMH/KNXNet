@@ -85,10 +85,11 @@ namespace KnxNet.Tunneling
 		{
 			ConnectResponse response = ConnectResponse.Parse(buffer, 0);
 
-			if(response.Status == 0)
+			if (response.Status == 0)
 			{
 				_connection.Connected(response.ChannelId);
-			} else
+			}
+			else
 			{
 				Logger?.WriteLine("Connection failed with status:" + response.Status.ToString("X"), LogType.Error);
 			}
@@ -101,31 +102,13 @@ namespace KnxNet.Tunneling
 
 			_connection._sender.SendPacket(ack);
 
-			byte[] serviceInfo = request.Message.ServiceInformation;
-
-			KnxAddress sourceAddress = new KnxAddress() { Value = new[] { serviceInfo[2], serviceInfo[3] } };
-			KnxGroupAddress destAddress = new KnxGroupAddress() { Value = new[] { serviceInfo[4], serviceInfo[5] } };
-
-			int dataLength = serviceInfo[6] & 0x0F;
-			byte[] data;
-
-			switch (dataLength)
+			_receivedPackets.Add(new KnxReceivedDataInEventArgs()
 			{
-				case 1:  // 4 bit max
-					data = new[] { (byte)(serviceInfo[8] & 0x0F) };
-					break;
-				case 2: // 8 bit
-					data = new[] { serviceInfo[9] };
-					break;
-				case 3: // 2 bytes
-					data = new[] { serviceInfo[9], serviceInfo[10] };
-					break;
-				default:
-					data = new byte[1];
-					break;
-			}
-
-			_receivedPackets.Add(new KnxReceivedDataInEventArgs() { DestinationAddress = destAddress, SourceAddress = sourceAddress, Data = data });
+				DestinationAddress = request.Message.GetDestinationAddress(),
+				SourceAddress = request.Message.GetSourceAddress(),
+				Data = request.Message.GetData(),
+				RequestType = request.Message.GetAPCIType()
+			});
 		}
 	}
 }

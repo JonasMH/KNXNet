@@ -7,7 +7,34 @@ namespace KnxNet.Core
 		public enum CmeiMessageCode
 		{
 			LDataReq = 0x11,
-			LDataInd = 0x29
+			LDataInd = 0x29,
+			LDataCon = 0x2E,
+
+			LRawReq = 0x10,
+			LRawInd = 0x2D,
+			LRawCon = 0x2F,
+
+			LPollDataReq = 0x13,
+			LPollDataCon = 0x25,
+
+			TDataConnectedReq = 0x41,
+			TDataConnectedInd = 0x89,
+
+			TDataIndividualReq = 0x4A,
+			TDataIndividualInd = 0x94,
+
+			MPropReadReq = 0xFC,
+			MPropReadCon = 0xFB,
+			MPropWriteReq = 0xF6,
+			MPropWriteCon = 0xF5,
+			MPropInfoInd = 0xF7,
+
+			MFuncPropCommandReq = 0xF8,
+			MFuncPropStateReadReq = 0xF9,
+			MFuncPropCon = 0xFA,
+
+			MResetReq = 0xF1,
+			MResetInd = 0xF0
 		}
 
 		public CmeiMessageCode MessageCode
