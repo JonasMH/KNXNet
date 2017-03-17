@@ -2,6 +2,7 @@
 
 namespace KnxNet.Core
 {
+#pragma warning disable CS0660, CS0661
 	public class KnxGroupAddress
 	{
 		private byte[] _value = new byte[2];

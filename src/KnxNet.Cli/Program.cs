@@ -22,7 +22,7 @@ namespace KnxNet.Cli
 		{
 			string mapping = File.ReadAllText("C:\\Users\\Jonas Hansen\\Desktop\\Ramskovvej.esf");
 			KnxGroupAddressDescriptionMap map = new EsfImporter().LoadFromString(mapping);
-			KnxTunnelingConnection connection = new KnxTunnelingConnection("192.168.1.21", 3671);
+			KnxTunnelingConnection connection = new KnxTunnelingConnection("172.16.1.122", 3671);
 
 			foreach (KnxGroupAddressDescription knxGroupAddressDescription in map.Where(x => x.Name.Contains("08")))
 			{
@@ -33,19 +33,10 @@ namespace KnxNet.Cli
 			connection.OnDisconnect += (sender, eventArgs) => Console.WriteLine("Disconnected");
 			connection.OnData += (sender, eventArgs) =>
 			{
+				Console.WriteLine(eventArgs.SourceAddress + " -> " + eventArgs.DestinationAddress + " : " + ByteArrayToString(eventArgs.Data));
 			};
 
 			connection.Connect();
-
-			connection.SendValue(KnxGroupAddress.Parse("6/0/24"), new byte[] { 0x01 }, 1);
-			connection.SendValue(KnxGroupAddress.Parse("6/0/24"), new byte[] { 0x01 }, 1);
-
-			Task.Delay(10000).Wait();
-
-			connection.SendValue(KnxGroupAddress.Parse("6/0/24"), new byte[] { 0x00 }, 1);
-			connection.SendValue(KnxGroupAddress.Parse("6/0/24"), new byte[] { 0x00 }, 1);
-
-			Console.WriteLine("Sent");
 
 			while (true)
 			{
@@ -60,4 +51,5 @@ namespace KnxNet.Cli
 			Task.Delay(1000).Wait();
 		}
 	}
+
 }

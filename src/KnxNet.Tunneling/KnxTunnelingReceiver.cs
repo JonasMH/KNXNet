@@ -72,8 +72,11 @@ namespace KnxNet.Tunneling
 					byte[] tmep = ack3.GetBytes();
 					_socket.Send(tmep);*/
 					break;
+				case ServiceType.ConnectionStateResponse:
+
+					break;
 				default:
-					Logger?.WriteLine("Unknown packet with service type: " + header.ServiceType.ToString("X"), LogType.Warn);
+					Logger?.WriteLine("Unknown packet with service type: " + (ServiceType)header.ServiceType, LogType.Warning);
 					break;
 			}
 		}
@@ -81,7 +84,14 @@ namespace KnxNet.Tunneling
 		private void HandleConnectResponse(byte[] buffer, KnxNetIPHeader header)
 		{
 			ConnectResponse response = ConnectResponse.Parse(buffer, 0);
-			_connection.Connected(response.ChannelId);
+
+			if(response.Status == 0)
+			{
+				_connection.Connected(response.ChannelId);
+			} else
+			{
+				Logger?.WriteLine("Connection failed with status:" + response.Status.ToString("X"), LogType.Error);
+			}
 		}
 
 		private void HandleTunnelingRequest(byte[] buffer, KnxNetIPHeader header)

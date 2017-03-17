@@ -5,8 +5,8 @@ namespace KnxNet.Core
 	public enum LogType
 	{
 		Info,
-		Warn,
-		Errr
+		Warning,
+		Error
 	}
 
 	public interface ILogger
@@ -18,7 +18,7 @@ namespace KnxNet.Core
 	{
 		public void WriteLine(string line, LogType type = LogType.Info)
 		{
-			Console.WriteLine(type + ":" + line);
+			Console.WriteLine(DateTime.Now.ToString() + "(" + type + "):" + line);
 		}
 	}
 }

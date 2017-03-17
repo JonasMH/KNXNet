@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using KnxNet.Core;
 using KnxNet.Core.Packets;
 using KnxNet.Core.Placeholders;
+using System.Threading;
 
 namespace KnxNet.Tunneling
 {
@@ -18,13 +18,13 @@ namespace KnxNet.Tunneling
 		public IPEndPoint RemoteEndPoint { get; }
 		public KnxAddress SourceAddress { get; set; } = new KnxAddress(1, 0, 150);
 
+		public bool IsConnected { get; private set; } = false;
+
 		public ILogger Logger { get; set; }
 
 		public event EventHandler OnConnect;
 		public event EventHandler OnDisconnect;
 		public event EventHandler<KnxReceivedDataInEventArgs> OnData;
-
-		public TimeSpan ConnectionStateRequestInterval { get; set; } = TimeSpan.FromSeconds(60);
 
 		private byte _sequenceNumber;
 		private UdpClient _udpClient;
@@ -33,11 +33,11 @@ namespace KnxNet.Tunneling
 
 		internal KnxTunnelingSender _sender;
 		internal KnxTunnelingReceiver _receiver;
+		private Timer _timer;
 
 		public KnxTunnelingConnection(string host, int port)
 		{
-			new Timer(state => SendConnectionStateRequest(), null, TimeSpan.Zero,
-				ConnectionStateRequestInterval);
+			_timer = new Timer((e) => SendConnectionStateRequest(), null, 1000, 60000);
 
 			Host = host;
 			Port = port;
@@ -49,16 +49,25 @@ namespace KnxNet.Tunneling
 
 		private void SendConnectionStateRequest()
 		{
-			if (_udpClient == null)
+			if (_udpClient == null && IsConnected)
 				return;
 
-			ConnectionStateRequest request = new ConnectionStateRequest()
+			try
 			{
-				ChannelId = ChannelId,
-				ControlEndpoint = new KnxNetIPHPAI(_udpClient.LocalIpEndPoint(), KnxNetIPHPAI.ProtocolCodes.Ipv4Udp)
-			};
+				ConnectionStateRequest request = new ConnectionStateRequest()
+				{
+					ChannelId = ChannelId,
+					ControlEndpoint = new KnxNetIPHPAI(_udpClient.LocalIpEndPoint(), KnxNetIPHPAI.ProtocolCodes.Ipv4Udp)
+				};
 
-			_sender.SendPacket(request);
+				_sender.SendPacket(request);
+				Logger?.WriteLine("Sent heartbeat");
+			}
+			catch(Exception e)
+			{
+				Logger?.WriteLine(e.Message, LogType.Error);
+			}
+
 		}
 
 		public void Connect()
@@ -90,11 +99,13 @@ namespace KnxNet.Tunneling
 			_sequenceNumber = 0;
 			ChannelId = channelId;
 			Logger?.WriteLine("Ch. #: " + ChannelId);
+			IsConnected = true;
 			OnConnect?.Invoke(this, EventArgs.Empty);
 		}
 
 		internal void Disconnected()
 		{
+			IsConnected = false;
 			OnDisconnect?.Invoke(this, EventArgs.Empty);
 		}
 

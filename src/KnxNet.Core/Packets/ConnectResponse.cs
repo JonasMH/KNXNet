@@ -19,13 +19,17 @@ namespace KnxNet.Core.Packets
 			progress += 6;
 
 			output.ChannelId = buffer[index + progress];
+			progress++;
 			output.Status = buffer[index + progress];
-			progress += 2;
+			progress++;
 
-			output.DataEndpoint = KnxNetIPHPAI.Parse(buffer, index + progress);
-			progress += output.DataEndpoint.Lenght;
+			if(output.Status == 0)
+			{
+				output.DataEndpoint = KnxNetIPHPAI.Parse(buffer, index + progress);
+				progress += output.DataEndpoint.Lenght;
 
-			output.ResponseDataBlock = KnxNetIPCRD.Parse(buffer, index + progress);
+				output.ResponseDataBlock = KnxNetIPCRD.Parse(buffer, index + progress);
+			}
 
 			return output;
 		}
