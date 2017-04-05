@@ -130,14 +130,24 @@ namespace KnxNet.Tunneling
 			return _sequenceNumber++;
 		}
 
+		/// <summary>
+		/// Send a value to a given address
+		/// </summary>
+		/// <param name="address">The knx group address to send data to</param>
+		/// <param name="data">The data</param>
+		/// <param name="dataLength">The data-length in bits</param>
 		public void SendValue(KnxGroupAddress address, byte[] data, int dataLength)
 		{
 			_sender.SendMessage(address, data, dataLength);
 		}
 
+		/// <summary>
+		/// Request a value to be read from the bus. If there's a response it will be readable in the OnData event.
+		/// </summary>
+		/// <param name="address">The knx group address to read from</param>
 		public void RequestValue(KnxGroupAddress address)
 		{
-			throw new NotImplementedException();
+			_sender.RequestValue(address);
 		}
 
 		public void Dispose()

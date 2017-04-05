@@ -47,6 +47,11 @@ namespace KnxNet.Core.DataTypes
 			return new DataPointType5 { UnsignedValue = data[0] };
 		}
 
+		/// <summary>
+		/// Parses knx-data with a data-point type of 9.* (Some float-value)
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
 		public DataPointType9 DTP9(byte[] data)
 		{
 			int e = (data[0] & 0x78) >> 3;

@@ -75,6 +75,9 @@ namespace KnxNet.Tunneling
 				case ServiceType.ConnectionStateResponse:
 
 					break;
+				case ServiceType.DisconnectRequest:
+					_connection.Disconnected();
+					break;
 				default:
 					Logger?.WriteLine("Unknown packet with service type: " + (ServiceType)header.ServiceType, LogType.Warning);
 					break;

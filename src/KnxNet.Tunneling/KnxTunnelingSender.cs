@@ -57,25 +57,12 @@ namespace KnxNet.Tunneling
 					break;
 			}
 
-			lock (_connection.SequenceNumberLock)
+
+			SendCEMI(new CommonExternalMessageInterface()
 			{
-				TunnelingRequest request = new TunnelingRequest()
-				{
-					ConnectionHeader = new KnxNetBodyConnectionHeader()
-					{
-						ChannelId = _connection.ChannelId,
-						SequenceCounter = _connection.GetNextSequenceNumber()
-					},
-					Message = new CommonExternalMessageInterface()
-					{
-						MessageCode = CommonExternalMessageInterface.CmeiMessageCode.LDataReq,
-						ServiceInformation = buffer.ToArray()
-					}
-				};
-
-				UdpClient.SendAsync(request.GetBytes(), _connection.RemoteEndPoint);
-			}
-
+				MessageCode = CommonExternalMessageInterface.CmeiMessageCode.LDataReq,
+				ServiceInformation = buffer.ToArray()
+			});
 		}
 
 
@@ -87,6 +74,41 @@ namespace KnxNet.Tunneling
 		private void Send(byte[] buffer)
 		{
 			UdpClient.SendAsync(buffer, _connection.RemoteEndPoint).Wait();
+		}
+
+		public void RequestValue(KnxGroupAddress address)
+		{
+			IList<byte> buffer = new List<byte> {
+				0xBC,
+				0xE0,
+				_connection.SourceAddress.Value[0],
+				_connection.SourceAddress.Value[1],
+				address.Value[0],
+				address.Value[1],
+				0x01, 0x00, 0x00};
+
+			SendCEMI(new CommonExternalMessageInterface()
+			{
+				MessageCode = CommonExternalMessageInterface.CmeiMessageCode.LDataReq,
+				ServiceInformation = buffer.ToArray()
+			});
+		}
+
+		private void SendCEMI(CommonExternalMessageInterface message)
+		{
+			lock (_connection.SequenceNumberLock)
+			{
+				TunnelingRequest request = new TunnelingRequest()
+				{
+					ConnectionHeader = new KnxNetBodyConnectionHeader()
+					{
+						ChannelId = _connection.ChannelId,
+						SequenceCounter = _connection.GetNextSequenceNumber()
+					},
+					Message = message
+				};
+				UdpClient.SendAsync(request.GetBytes(), _connection.RemoteEndPoint);
+			}
 		}
 	}
 }

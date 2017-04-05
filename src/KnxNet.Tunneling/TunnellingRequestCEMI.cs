@@ -14,6 +14,11 @@ namespace KnxNet.Tunneling
 			return (APCIType)value;
 		}
 
+		public static void SetAPCIType(this CommonExternalMessageInterface cemi)
+		{
+			
+		}
+
 
 		public static KnxAddress GetSourceAddress(this CommonExternalMessageInterface cemi)
 		{

@@ -22,6 +22,10 @@ namespace KnxNet.Cli
 		public static void Main(string[] args)
 		{
 			KnxTunnelingConnection connection = new KnxTunnelingConnection("172.16.1.122", 3671);
+			KnxGroupAddress temperatureAddress = KnxGroupAddress.Parse("15/1/0");
+			KnxGroupAddress relayAddress = KnxGroupAddress.Parse("15/3/0");
+			DataTypeParser parser = new DataTypeParser();
+
 			connection.Logger = new ConsoleLogger();
 
 			connection.OnConnect += (sender, eventArgs) => Console.WriteLine("Connected");
@@ -30,9 +34,9 @@ namespace KnxNet.Cli
 			{
 				Console.WriteLine(eventArgs.SourceAddress + " -> " + eventArgs.DestinationAddress + " : " + ByteArrayToString(eventArgs.Data));
 
-				if(eventArgs.DestinationAddress.ToString() == "15/1/0" && eventArgs.RequestType == APCIType.AGroupValueWrite)
+				if(eventArgs.DestinationAddress == temperatureAddress && (eventArgs.RequestType == APCIType.AGroupValueWrite || eventArgs.RequestType == APCIType.AGroupValueResponse))
 				{
-					Console.WriteLine("Temp: " + new DataTypeParser().DTP9(eventArgs.Data).FloatValue);
+					Console.WriteLine("Temp: " + parser.DTP9(eventArgs.Data).FloatValue);
 				}
 			};
 
@@ -40,10 +44,25 @@ namespace KnxNet.Cli
 
 			while (true)
 			{
-				if (Console.ReadKey().Key == ConsoleKey.Q)
+				ConsoleKey key = Console.ReadKey().Key;
+
+				if (key == ConsoleKey.Q)
 				{
 					break;
 				}
+				else if (key == ConsoleKey.A)
+				{
+					connection.RequestValue(temperatureAddress);
+				}
+				else if (key == ConsoleKey.Z)
+				{
+					connection.SendValue(relayAddress, new byte[] {0}, 1);
+				}
+				else if (key == ConsoleKey.X)
+				{
+					connection.SendValue(relayAddress, new byte[] {1}, 1);
+				}
+
 			}
 
 			connection.Disconnect();
