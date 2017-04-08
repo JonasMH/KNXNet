@@ -2,42 +2,50 @@
 
 namespace KnxNet.Core.DataTypes
 {
-	public class DataTypeParser
+	public class DataPointParser
 	{
 		public DataPointType1 DPT1(byte[] data)
 		{
-			DataPointType1 dpt = new DataPointType1();
+			DataPointType1 dpt = new DataPointType1
+			{
+				B = (data[0] & 0xFE) == 1
+			};
 
-			dpt.B = (data[0] & 0xFE) == 1;
 
 			return dpt;
 		}
 
 		public DataPointType2 DTP2(byte[] data)
 		{
-			DataPointType2 dpt = new DataPointType2();
+			DataPointType2 dpt = new DataPointType2
+			{
+				C = (data[0] & 0x02) == 1,
+				V = (data[0] & 0x01) == 1
+			};
 
-			dpt.C = (data[0] & 0x02) == 1;
-			dpt.V = (data[0] & 0x01) == 1;
 
 			return dpt;
 		}
 
 		public DataPointType3 DTP3(byte[] data)
 		{
-			DataPointType3 dpt = new DataPointType3();
+			DataPointType3 dpt = new DataPointType3
+			{
+				C = (data[0] & 0x08) == 1,
+				StepCode = (byte) (data[0] & 0x07)
+			};
 
-			dpt.C = (data[0] & 0x08) == 1;
-			dpt.StepCode = (byte)(data[0] & 0x07);
 
 			return dpt;
 		}
 
 		public DataPointType4 DTP4(byte[] data)
 		{
-			DataPointType4 dpt = new DataPointType4();
+			DataPointType4 dpt = new DataPointType4
+			{
+				Character = data[0]
+			};
 
-			dpt.Character = (char)data[0];
 
 			return dpt;
 		}
@@ -74,37 +82,5 @@ namespace KnxNet.Core.DataTypes
 
 			return new DataPointType9 { FloatValue = 0.01f * value * (float)Math.Pow(2, e) };
 		}
-	}
-
-	public class DataPointType1
-	{
-		public bool B { get; set; }
-	}
-
-	public class DataPointType2
-	{
-		public bool C { get; set; }
-		public bool V { get; set; }
-	}
-
-	public class DataPointType3
-	{
-		public bool C { get; set; }
-		public byte StepCode { get; set; }
-	}
-
-	public class DataPointType4
-	{
-		public char Character { get; set; }
-	}
-
-	public class DataPointType5
-	{
-		public byte UnsignedValue { get; set; }
-	}
-
-	public class DataPointType9
-	{
-		public float FloatValue { get; set; }
 	}
 }

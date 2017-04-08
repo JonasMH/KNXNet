@@ -73,5 +73,27 @@ namespace KNXNet.Core.Test.Unit
 			KnxGroupAddress addr = KnxGroupAddress.Parse(input);
 			Assert.Equal(expected, addr.SubGroup);
 		}
+
+		[Theory]
+		[InlineData("0/0/0", "0/0/0")]
+		[InlineData("15/0/0", "15/0/0")]
+		public void EqualsOperator_SameAddresses_ShouldBeEqual(string addr1, string addr2)
+		{
+			Assert.True(KnxGroupAddress.Parse(addr1) == KnxGroupAddress.Parse(addr2));
+		}
+
+		[Theory]
+		[InlineData("0/0/0", "0/0/1")]
+		[InlineData("15/0/0", "0/0/0")]
+		public void EqualsOperator_DifferentAddresses_ShouldNotBeEqual(string addr1, string addr2)
+		{
+			Assert.False(KnxGroupAddress.Parse(addr1) == KnxGroupAddress.Parse(addr2));
+		}
+
+		[Fact]
+		public void EqualsOperation_NullInput_ShouldReturnFalse()
+		{
+			Assert.False(KnxGroupAddress.Parse("15/0/1") == null);
+		}
 	}
 }

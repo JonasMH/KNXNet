@@ -40,9 +40,8 @@ namespace KnxNet.Tunneling.Packets
 
 			if (cemiFrameSize == 0)
 				return request;
-
-			CommonExternalMessageInterface msg;
-			CommonExternalMessageInterface.TryParse(buffer, index + 10, cemiFrameSize, out msg);
+			
+			CommonExternalMessageInterface.TryParse(buffer, index + 10, cemiFrameSize, out CommonExternalMessageInterface msg);
 			request.Message = msg;
 
 			return request;

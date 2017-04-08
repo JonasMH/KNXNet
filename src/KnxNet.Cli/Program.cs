@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KnxNet.Core;
@@ -24,7 +22,7 @@ namespace KnxNet.Cli
 			KnxTunnelingConnection connection = new KnxTunnelingConnection("172.16.1.122", 3671);
 			KnxGroupAddress temperatureAddress = KnxGroupAddress.Parse("15/1/0");
 			KnxGroupAddress relayAddress = KnxGroupAddress.Parse("15/3/0");
-			DataTypeParser parser = new DataTypeParser();
+			DataPointParser parser = new DataPointParser();
 
 			connection.Logger = new ConsoleLogger();
 
@@ -56,11 +54,11 @@ namespace KnxNet.Cli
 				}
 				else if (key == ConsoleKey.Z)
 				{
-					connection.SendValue(relayAddress, new byte[] {0}, 1);
+					connection.SendDPT1(relayAddress, false);
 				}
 				else if (key == ConsoleKey.X)
 				{
-					connection.SendValue(relayAddress, new byte[] {1}, 1);
+					connection.SendDPT1(relayAddress, true);
 				}
 
 			}
