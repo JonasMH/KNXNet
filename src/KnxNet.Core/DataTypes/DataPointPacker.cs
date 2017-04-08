@@ -8,7 +8,7 @@ namespace KnxNet.Core.DataTypes
 	{
 		public DataPointPackerResult DPT1(DataPointType1 dpt)
 		{
-			byte byteValue = dpt.B ? (byte)1 : (byte)2;
+			byte byteValue = dpt.B ? (byte)1 : (byte)0;
 
 			return new DataPointPackerResult
 			{
