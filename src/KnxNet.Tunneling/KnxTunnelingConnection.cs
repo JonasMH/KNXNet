@@ -5,6 +5,7 @@ using KnxNet.Core;
 using KnxNet.Core.Packets;
 using KnxNet.Core.Placeholders;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KnxNet.Tunneling
 {
@@ -23,7 +24,7 @@ namespace KnxNet.Tunneling
 		public ILogger Logger { get; set; }
 
 		public event EventHandler OnConnect;
-		public event EventHandler OnDisconnect;
+		public event EventHandler<KnxDisconnectEventArg> OnDisconnect;
 		public event EventHandler<KnxReceivedDataInEventArgs> OnData;
 
 		private byte _sequenceNumber;
@@ -33,12 +34,11 @@ namespace KnxNet.Tunneling
 
 		internal KnxTunnelingSender _sender;
 		internal KnxTunnelingReceiver _receiver;
+		internal DateTime LastReceivedHeartBeat;
 		private Timer _timer;
 
 		public KnxTunnelingConnection(string host, int port)
 		{
-			_timer = new Timer((e) => SendConnectionStateRequest(), null, 1000, 60000);
-
 			Host = host;
 			Port = port;
 
@@ -61,7 +61,43 @@ namespace KnxNet.Tunneling
 				};
 
 				_sender.SendPacket(request);
-				Logger?.WriteLine("Sent heartbeat");
+				DateTime sentHeartbeatTime = DateTime.Now;
+				bool gotResponse = false;
+
+				for (int i = 0; i < 3 && !gotResponse; i++)
+				{
+					while (true)
+					{
+						Task.Delay(250).Wait();
+
+						if (LastReceivedHeartBeat > sentHeartbeatTime)
+						{
+							gotResponse = true;
+							break;
+						}
+
+						if (DateTime.Now - sentHeartbeatTime > TimeSpan.FromSeconds(10))
+						{
+							Logger?.WriteLine("Retrying heartbeat");
+							_sender.SendPacket(request);
+							break;
+						}
+					}
+				}
+
+				if (!gotResponse)
+				{
+					Disconnected(new KnxDisconnectEventArg
+					{
+						Reason = KnxDisconnectEventArg.DisconnectReason.ConnectionLost,
+						WasClean = false
+					});
+					Logger?.WriteLine("No heartbeat response", LogType.Error);
+				}
+				else
+				{
+					Logger?.WriteLine("Heartbeart successful");
+				}
 			}
 			catch(Exception e)
 			{
@@ -92,6 +128,9 @@ namespace KnxNet.Tunneling
 			_receiver.Start();
 
 			_sender.SendPacket(request);
+
+
+			_timer = new Timer((e) => SendConnectionStateRequest(), null, 1000, 60000);
 		}
 
 		internal void Connected(byte channelId)
@@ -103,10 +142,11 @@ namespace KnxNet.Tunneling
 			OnConnect?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal void Disconnected()
+		internal void Disconnected(KnxDisconnectEventArg args)
 		{
 			IsConnected = false;
-			OnDisconnect?.Invoke(this, EventArgs.Empty);
+			_timer.Dispose();
+			OnDisconnect?.Invoke(this, args);
 		}
 
 		internal void NewData(KnxReceivedDataInEventArgs data)
@@ -123,6 +163,7 @@ namespace KnxNet.Tunneling
 			};
 
 			_sender.SendPacket(request);
+			_timer.Dispose();
 		}
 
 		public byte GetNextSequenceNumber()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using KnxNet.Core;
@@ -73,20 +74,29 @@ namespace KnxNet.Tunneling
 					_socket.Send(tmep);*/
 					break;
 				case ServiceType.ConnectionStateResponse:
-
+					_connection.LastReceivedHeartBeat = DateTime.Now;
 					break;
 				case ServiceType.DisconnectRequest:
-					_connection.Disconnected();
+					_connection.Disconnected(new KnxDisconnectEventArg
+					{
+						Reason = KnxDisconnectEventArg.DisconnectReason.EndpointRequest,
+						WasClean = true
+					});
+					//TODO Should respond to request
 					break;
 				case ServiceType.DisconnectResponse:
-					_connection.Disconnected();
+					_connection.Disconnected(new KnxDisconnectEventArg
+					{
+						Reason = KnxDisconnectEventArg.DisconnectReason.LocalRequest,
+						WasClean = true
+					});
 					break;
 				default:
 					Logger?.WriteLine("Unknown packet with service type: " + (ServiceType)header.ServiceType, LogType.Warning);
 					break;
 			}
 		}
-
+		
 		private void HandleConnectResponse(byte[] buffer, KnxNetIPHeader header)
 		{
 			ConnectResponse response = ConnectResponse.Parse(buffer, 0);

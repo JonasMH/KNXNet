@@ -27,7 +27,7 @@ namespace KnxNet.Cli
 			connection.Logger = new ConsoleLogger();
 
 			connection.OnConnect += (sender, eventArgs) => Console.WriteLine("Connected");
-			connection.OnDisconnect += (sender, eventArgs) => Console.WriteLine("Disconnected");
+			connection.OnDisconnect += (sender, eventArgs) => Console.WriteLine("Disconnected: " + eventArgs.Reason.ToString());
 			connection.OnData += (sender, eventArgs) =>
 			{
 				Console.WriteLine(eventArgs.SourceAddress + " -> " + eventArgs.DestinationAddress + " : " + ByteArrayToString(eventArgs.Data));

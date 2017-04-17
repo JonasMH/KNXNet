@@ -12,10 +12,26 @@ namespace KnxNet.Core
 		public APCIType RequestType { get; set; }
 	}
 
+
+	public class KnxDisconnectEventArg : EventArgs
+	{
+		public enum DisconnectReason
+		{
+			Unknown,
+			EndpointRequest,
+			LocalRequest,
+			ConnectionLost
+		}
+
+		public bool WasClean { get; set; }
+		public DisconnectReason Reason { get; set; }
+	}
+
+
 	public interface IKnxConnection
 	{
 		event EventHandler OnConnect;
-		event EventHandler OnDisconnect;
+		event EventHandler<KnxDisconnectEventArg> OnDisconnect;
 		event EventHandler<KnxReceivedDataInEventArgs> OnData;
 
 		string Host { get; }
