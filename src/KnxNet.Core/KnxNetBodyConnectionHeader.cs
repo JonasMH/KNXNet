@@ -6,6 +6,7 @@
 		public byte ChannelId { get; set; }
 		public byte SequenceCounter { get; set; }
 		public byte Reserved { get; set; }
+		public byte TunnelingAckStatus => Reserved;
 
 		public static KnxNetBodyConnectionHeader Parse(byte[] buffer, int index)
 		{

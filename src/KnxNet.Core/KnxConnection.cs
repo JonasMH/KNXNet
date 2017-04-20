@@ -20,7 +20,9 @@ namespace KnxNet.Core
 			Unknown,
 			EndpointRequest,
 			LocalRequest,
-			ConnectionLost
+			ConnectionLost,
+			ConnectionStateStatusCode,
+			TunnelingAckStatusCode
 		}
 
 		public bool WasClean { get; set; }

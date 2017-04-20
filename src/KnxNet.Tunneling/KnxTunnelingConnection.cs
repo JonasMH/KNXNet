@@ -69,6 +69,10 @@ namespace KnxNet.Tunneling
 					while (true)
 					{
 						Task.Delay(250).Wait();
+						if (!IsConnected)
+						{
+							return;
+						}
 
 						if (LastReceivedHeartBeat > sentHeartbeatTime)
 						{
@@ -99,7 +103,7 @@ namespace KnxNet.Tunneling
 					Logger?.WriteLine("Heartbeart successful");
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Logger?.WriteLine(e.Message, LogType.Error);
 			}
@@ -126,19 +130,20 @@ namespace KnxNet.Tunneling
 			_receiver = new KnxTunnelingReceiver(this, _udpClient) { Logger = Logger };
 
 			_receiver.Start();
-
 			_sender.SendPacket(request);
 
 
-			_timer = new Timer((e) => SendConnectionStateRequest(), null, 1000, 60000);
 		}
 
 		internal void Connected(byte channelId)
 		{
 			_sequenceNumber = 0;
 			ChannelId = channelId;
-			Logger?.WriteLine("Ch. #: " + ChannelId);
 			IsConnected = true;
+
+			Logger?.WriteLine("Ch. #: " + ChannelId);
+			_timer = new Timer((e) => SendConnectionStateRequest(), null, 1000, 60000);
+
 			OnConnect?.Invoke(this, EventArgs.Empty);
 		}
 

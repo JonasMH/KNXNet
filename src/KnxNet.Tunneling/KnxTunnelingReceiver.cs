@@ -53,28 +53,16 @@ namespace KnxNet.Tunneling
 			switch ((ServiceType)header.ServiceType)
 			{
 				case ServiceType.ConnectResponse:
-					HandleConnectResponse(buffer, header);
+					HandleConnectResponse(buffer);
 					break;
 				case ServiceType.TunnelingRequest:
-					HandleTunnelingRequest(buffer, header);
+					HandleTunnelingRequest(buffer);
 					break;
 				case ServiceType.TunnelingAcknowledge:
-					/*TunnelingAck ack2 = TunnelingAck.Parse(buffer, 0);//TODO ERROR CHECKING
-					_socket.Receive(buffer);
-					TunnelingRequest request1 = TunnelingRequest.Parse(buffer, 0);
-
-					TunnelingAck ack3 = new TunnelingAck
-					{
-						ConnectionHeader = request1.ConnectionHeader
-					};
-
-					ack3.ConnectionHeader.SequenceCounter &= 0x01;
-
-					byte[] tmep = ack3.GetBytes();
-					_socket.Send(tmep);*/
+					HandleTunnelingAcknowledge(buffer);
 					break;
 				case ServiceType.ConnectionStateResponse:
-					_connection.LastReceivedHeartBeat = DateTime.Now;
+					HandleConnectionStateResponse(buffer);
 					break;
 				case ServiceType.DisconnectRequest:
 					_connection.Disconnected(new KnxDisconnectEventArg
@@ -96,8 +84,38 @@ namespace KnxNet.Tunneling
 					break;
 			}
 		}
-		
-		private void HandleConnectResponse(byte[] buffer, KnxNetIPHeader header)
+
+		private void HandleConnectionStateResponse(byte[] buffer)
+		{
+			ConnectionStateResponse response = ConnectionStateResponse.Parse(buffer, 0);
+
+			if (response.StatusCode != ConnectionStateResponse.StatusCodes.NoError)
+			{
+				_connection.Disconnected(new KnxDisconnectEventArg
+				{
+					Reason = KnxDisconnectEventArg.DisconnectReason.ConnectionStateStatusCode,
+					WasClean = false
+				});
+			}
+
+			_connection.LastReceivedHeartBeat = DateTime.Now;
+		}
+
+		private void HandleTunnelingAcknowledge(byte[] buffer)
+		{
+			TunnelingAck ack = TunnelingAck.Parse(buffer, 0);
+
+			if (ack.ConnectionHeader.TunnelingAckStatus != 0)
+			{
+				_connection.Disconnected(new KnxDisconnectEventArg
+				{
+					Reason = KnxDisconnectEventArg.DisconnectReason.TunnelingAckStatusCode,
+					WasClean = false
+				});
+			}
+		}
+
+		private void HandleConnectResponse(byte[] buffer)
 		{
 			ConnectResponse response = ConnectResponse.Parse(buffer, 0);
 
@@ -111,7 +129,7 @@ namespace KnxNet.Tunneling
 			}
 		}
 
-		private void HandleTunnelingRequest(byte[] buffer, KnxNetIPHeader header)
+		private void HandleTunnelingRequest(byte[] buffer)
 		{
 			TunnelingRequest request = TunnelingRequest.Parse(buffer, 0);
 			TunnelingAck ack = new TunnelingAck { ConnectionHeader = request.ConnectionHeader };
