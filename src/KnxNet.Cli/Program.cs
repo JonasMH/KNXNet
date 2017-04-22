@@ -34,7 +34,7 @@ namespace KnxNet.Cli
 
 				if(eventArgs.DestinationAddress == temperatureAddress && (eventArgs.RequestType == APCIType.AGroupValueWrite || eventArgs.RequestType == APCIType.AGroupValueResponse))
 				{
-					Console.WriteLine("Temp: " + parser.DTP9(eventArgs.Data).FloatValue);
+					Console.WriteLine("Temp: " + parser.DPT9(eventArgs.Data).FloatValue);
 				}
 			};
 
