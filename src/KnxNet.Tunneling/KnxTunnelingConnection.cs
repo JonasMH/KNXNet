@@ -19,7 +19,7 @@ namespace KnxNet.Tunneling
 		public IPEndPoint RemoteEndPoint { get; }
 		public KnxAddress SourceAddress { get; set; } = new KnxAddress(1, 0, 150);
 
-		public bool IsConnected { get; private set; } = false;
+		public bool IsConnected { get; private set; }
 
 		public ILogger Logger { get; set; }
 
@@ -32,8 +32,8 @@ namespace KnxNet.Tunneling
 
 		public object SequenceNumberLock = new object();
 
-		internal KnxTunnelingSender _sender;
-		internal KnxTunnelingReceiver _receiver;
+		internal KnxTunnelingSender Sender;
+		internal KnxTunnelingReceiver Receiver;
 		internal DateTime LastReceivedHeartBeat;
 		private Timer _timer;
 
@@ -60,7 +60,7 @@ namespace KnxNet.Tunneling
 					ControlEndpoint = new KnxNetIPHPAI(_udpClient.LocalIpEndPoint(), KnxNetIPHPAI.ProtocolCodes.Ipv4Udp)
 				};
 
-				_sender.SendPacket(request);
+				Sender.SendPacket(request);
 				DateTime sentHeartbeatTime = DateTime.Now;
 				bool gotResponse = false;
 
@@ -83,7 +83,7 @@ namespace KnxNet.Tunneling
 						if (DateTime.Now - sentHeartbeatTime > TimeSpan.FromSeconds(10))
 						{
 							Logger?.WriteLine("Retrying heartbeat");
-							_sender.SendPacket(request);
+							Sender.SendPacket(request);
 							break;
 						}
 					}
@@ -126,11 +126,11 @@ namespace KnxNet.Tunneling
 					}
 			};
 
-			_sender = new KnxTunnelingSender(this, _udpClient) { Logger = Logger };
-			_receiver = new KnxTunnelingReceiver(this, _udpClient) { Logger = Logger };
+			Sender = new KnxTunnelingSender(this, _udpClient) { Logger = Logger };
+			Receiver = new KnxTunnelingReceiver(this, _udpClient) { Logger = Logger };
 
-			_receiver.Start();
-			_sender.SendPacket(request);
+			Receiver.Start();
+			Sender.SendPacket(request);
 
 
 		}
@@ -167,7 +167,7 @@ namespace KnxNet.Tunneling
 				ControlEndpoint = new KnxNetIPHPAI(_udpClient.LocalIpEndPoint(), KnxNetIPHPAI.ProtocolCodes.Ipv4Udp)
 			};
 
-			_sender.SendPacket(request);
+			Sender.SendPacket(request);
 			_timer.Dispose();
 		}
 
@@ -184,7 +184,7 @@ namespace KnxNet.Tunneling
 		/// <param name="dataLength">The data-length in bits</param>
 		public void SendValue(KnxGroupAddress address, byte[] data, int dataLength)
 		{
-			_sender.SendMessage(address, data, dataLength);
+			Sender.SendMessage(address, data, dataLength);
 		}
 
 		/// <summary>
@@ -193,7 +193,7 @@ namespace KnxNet.Tunneling
 		/// <param name="address">The knx group address to read from</param>
 		public void RequestValue(KnxGroupAddress address)
 		{
-			_sender.RequestValue(address);
+			Sender.RequestValue(address);
 		}
 
 		public void Dispose()

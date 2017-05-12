@@ -1,4 +1,4 @@
-﻿namespace KnxNet.Tunneling
+﻿namespace KnxNet.Core
 {
 	public enum APCIType
 	{

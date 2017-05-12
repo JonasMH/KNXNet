@@ -18,7 +18,7 @@ namespace KnxNet.Core
 	{
 		public void WriteLine(string line, LogType type = LogType.Info)
 		{
-			Console.WriteLine(DateTime.Now.ToString() + "(" + type + "):" + line);
+			Console.WriteLine(DateTime.Now + "(" + type + "):" + line);
 		}
 	}
 }

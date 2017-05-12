@@ -39,8 +39,8 @@ namespace KnxNet.Core
 
 		public CmeiMessageCode MessageCode
 		{
-			get { return (CmeiMessageCode)MessageCodeRaw; }
-			set { MessageCodeRaw = (byte)value; }
+			get => (CmeiMessageCode)MessageCodeRaw;
+			set => MessageCodeRaw = (byte)value;
 		}
 
 		public byte MessageCodeRaw { get; set; }

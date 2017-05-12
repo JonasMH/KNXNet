@@ -16,7 +16,7 @@ namespace KnxNet.Core
 
 		public static short ToShort(byte[] buffer, int index)
 		{
-			return BitConverter.ToInt16(new byte[] { buffer[index + 1], buffer[index] }, 0);
+			return BitConverter.ToInt16(new[] {buffer[index + 1], buffer[index]}, 0);
 		}
 	}
 }

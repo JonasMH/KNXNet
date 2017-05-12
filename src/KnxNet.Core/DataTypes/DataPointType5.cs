@@ -11,5 +11,14 @@
 				UnsignedValue = data[0]
 			};
 		}
+
+		public DataPointPackerResult Pack()
+		{
+			return new DataPointPackerResult
+			{
+				BitLength = 8,
+				Data = new[] {UnsignedValue}
+			};
+		}
 	}
 }

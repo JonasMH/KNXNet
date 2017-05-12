@@ -1,5 +1,4 @@
-﻿using KnxNet.Tunneling;
-using System;
+﻿using System;
 using System.Net;
 
 namespace KnxNet.Core

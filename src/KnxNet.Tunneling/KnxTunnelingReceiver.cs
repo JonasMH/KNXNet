@@ -134,7 +134,7 @@ namespace KnxNet.Tunneling
 			TunnelingRequest request = TunnelingRequest.Parse(buffer, 0);
 			TunnelingAck ack = new TunnelingAck { ConnectionHeader = request.ConnectionHeader };
 
-			_connection._sender.SendPacket(ack);
+			_connection.Sender.SendPacket(ack);
 
 			_receivedPackets.Add(new KnxReceivedDataInEventArgs()
 			{

@@ -3,11 +3,14 @@
 namespace KnxNet.Core
 {
 #pragma warning disable CS0660, CS0661
+
 	public class KnxGroupAddress
 	{
 		private byte[] _value = new byte[2];
 
-		public KnxGroupAddress() { }
+		public KnxGroupAddress()
+		{
+		}
 
 		public KnxGroupAddress(byte mainGroup, byte middleGroup, byte subGroup)
 		{
@@ -18,17 +21,17 @@ namespace KnxNet.Core
 
 		public static KnxGroupAddress Parse(string input)
 		{
-			string[] vals = input.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+			string[] vals = input.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 
 			if (vals.Length != 3)
 				throw new Exception("Could not parse, not enough /");
 
-			return new KnxGroupAddress((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]));
+			return new KnxGroupAddress((byte) int.Parse(vals[0]), (byte) int.Parse(vals[1]), (byte) int.Parse(vals[2]));
 		}
 
 		public byte[] Value
 		{
-			get { return _value; }
+			get => _value;
 			set
 			{
 				if (_value == null || _value.Length != 2)
@@ -40,29 +43,33 @@ namespace KnxNet.Core
 
 		public byte MainGroup
 		{
-			get { return (byte)(Value[0] >> 3); }
+			get => (byte) (Value[0] >> 3);
 			set
 			{
 				Value[0] &= 0x07;
-				Value[0] |= (byte)(value << 3);
+				Value[0] |= (byte) (value << 3);
 			}
 		}
 
 		public byte MiddleGroup
 		{
-			get { return (byte)(Value[0] & 0x07); }
+			get => (byte) (Value[0] & 0x07);
 			set
 			{
 				Value[0] &= 0xF8;
-				Value[0] |= (byte)(value & 0x07);
+				Value[0] |= (byte) (value & 0x07);
 			}
 		}
 
-		public byte SubGroup { get { return Value[1]; } set { Value[1] = value; } }
-
-		public static bool operator==(KnxGroupAddress address1, KnxGroupAddress address2)
+		public byte SubGroup
 		{
-			if ((object)address1 == null || (object)address2 == null)
+			get => Value[1];
+			set => Value[1] = value;
+		}
+
+		public static bool operator ==(KnxGroupAddress address1, KnxGroupAddress address2)
+		{
+			if ((object) address1 == null || (object) address2 == null)
 				return false;
 
 			return

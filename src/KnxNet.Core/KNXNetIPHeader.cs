@@ -25,14 +25,6 @@ namespace KnxNet.Core
 		RoutingLostMessage = 0x0531
 	}
 
-	/* Connection types
-        DeviceManagementConnection = 0x03,
-        TunnelConnection = 0x04,
-        RemoteLogConnection = 0x06,
-        RemoteConfigurationConnection = 0x07,
-        ObjectServerConnection = 0x08
-     */
-
 	public class KnxNetIPHeader
 	{
 		public byte HeaderSize { get; set; }

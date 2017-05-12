@@ -11,6 +11,13 @@ namespace KnxNet.Tunneling
 			DataPointPackerResult result = new DataPointType1 { B = value }.Pack();
 			con.SendValue(address, result.Data, result.BitLength);
 		}
+
+		public static void SendDPT5(this KnxTunnelingConnection con, KnxGroupAddress address, byte value)
+		{
+			DataPointPackerResult result = new DataPointType5 { UnsignedValue = value }.Pack();
+			con.SendValue(address, result.Data, result.BitLength);
+		}
+
 		public static void SendDPT9(this KnxTunnelingConnection con, KnxGroupAddress address, float value)
 		{
 			DataPointPackerResult result = new DataPointType9 { FloatValue = value }.Pack();

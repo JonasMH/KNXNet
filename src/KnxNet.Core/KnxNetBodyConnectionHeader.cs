@@ -23,7 +23,7 @@
 
 		public byte[] GetBytes()
 		{
-			return new byte[] { StructureLength, ChannelId, SequenceCounter, Reserved };
+			return new[] {StructureLength, ChannelId, SequenceCounter, Reserved};
 		}
 	}
 }

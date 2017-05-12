@@ -3,12 +3,14 @@ using System.Diagnostics;
 
 namespace KnxNet.Core
 {
-	[DebuggerDisplay("Group Address = {ToString()}")]
+	[DebuggerDisplay("Group Address = {" + nameof(ToString) + "()}")]
 	public class KnxAddress
 	{
 		private byte[] _value = new byte[2];
 
-		public KnxAddress() { }
+		public KnxAddress()
+		{
+		}
 
 		public KnxAddress(byte area, byte line, byte busdevice)
 		{
@@ -19,17 +21,17 @@ namespace KnxNet.Core
 
 		public static KnxAddress Parse(string input)
 		{
-			string[] vals = input.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+			string[] vals = input.Split(new [] {"."}, StringSplitOptions.RemoveEmptyEntries);
 
 			if (vals.Length != 3)
 				throw new Exception("Could not parse, not enough .");
 
-			return new KnxAddress((byte)int.Parse(vals[0]), (byte)int.Parse(vals[1]), (byte)int.Parse(vals[2]));
+			return new KnxAddress((byte) int.Parse(vals[0]), (byte) int.Parse(vals[1]), (byte) int.Parse(vals[2]));
 		}
 
 		public byte[] Value
 		{
-			get { return _value; }
+			get => _value;
 			set
 			{
 				if (_value == null || _value.Length != 2)
@@ -41,25 +43,29 @@ namespace KnxNet.Core
 
 		public byte Area
 		{
-			get { return (byte)(Value[0] >> 4); }
+			get => (byte) (Value[0] >> 4);
 			set
 			{
 				Value[0] &= 0x0F;
-				Value[0] |= (byte)(value << 4);
+				Value[0] |= (byte) (value << 4);
 			}
 		}
 
 		public byte Line
 		{
-			get { return (byte)(Value[0] & 0x0F); }
+			get => (byte) (Value[0] & 0x0F);
 			set
 			{
 				Value[0] &= 0xF0;
-				Value[0] |= (byte)(value & 0xF0);
+				Value[0] |= (byte) (value & 0xF0);
 			}
 		}
 
-		public byte BusDevice { get { return Value[1]; } set { Value[1] = value; } }
+		public byte BusDevice
+		{
+			get => Value[1];
+			set => Value[1] = value;
+		}
 
 		public override string ToString()
 		{

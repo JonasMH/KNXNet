@@ -8,7 +8,7 @@
 		{
 			return new DataPointPackerResult
 			{
-				Data = new byte[] { Character },
+				Data = new[] {Character},
 				BitLength = 1
 			};
 		}
