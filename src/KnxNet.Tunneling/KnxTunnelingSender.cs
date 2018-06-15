@@ -52,8 +52,8 @@ namespace KnxNet.Tunneling
 					break;
 				case 3:
 					buffer.Add(0x80);
+					buffer.Add(data[0]);
 					buffer.Add(data[1]);
-					buffer.Add(data[2]);
 					break;
 			}
 
